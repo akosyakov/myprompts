@@ -1,0 +1,144 @@
+{
+  "publisher": "akosyakov",
+  "name": "myprompts",
+  "displayName": "myprompts",
+  "description": "Manage custom prompts for AI-assisted programming",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/akosyakov/myprompts.git"
+  },
+  "icon": "images/icon.png",
+  "version": "0.0.11",
+  "engines": {
+    "vscode": "^1.94.0"
+  },
+  "categories": [
+    "AI",
+    "Chat",
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "category": "My Prompts",
+        "command": "myprompts.edit",
+        "title": "Edit"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "myprompts.edit",
+          "when": "editorTextFocus",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "My Prompts",
+      "properties": {
+        "myprompts.systemPrompt": {
+          "type": "array",
+          "description": "The system prompt to use for generating prompts",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "You are an AI coding assistant. Your task is to rewrite or modify the provided code according to the given instructions.",
+            "IMPORTANT: Respond only with the updated code. Do not use markdown or provide any explanations.",
+            "Ensure your response maintains the original code's formatting and indentation.",
+            "If you need to remove any code, only do so if you are certain it is no longer necessary."
+          ]
+        },
+        "myprompts.model": {
+          "type": "object",
+          "description": "The model to use for generating prompts",
+          "properties": {
+            "vendor": {
+              "type": "string",
+              "description": "A well-known identifier of the vendor of the language model. An example is `copilot`, but values are defined by extensions contributing chat models and need to be looked up with them.",
+              "default": "copilot"
+            },
+            "family": {
+              "type": "string",
+              "description": "Opaque family-name of the language model. Values are defined by extensions contributing languages and subject to change.",
+              "default": "gpt-4o"
+            }
+          },
+          "default": {
+            "vendor": "copilot",
+            "family": "gpt-4o"  
+          }
+        },
+        "myprompts.commands": {
+          "type": "array",
+          "description": "Commands with associated prompts",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "The title of the command"
+              },
+              "prompt": {
+                "type": "array",
+                "description": "The prompt to run",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "codeAction": {
+                "type": "string",
+                "description": "Whether to display the command as a code action",
+                "enum": [
+                  "quickfix",
+                  "refactor",
+                  "extract",
+                  "inline",
+                  "move",
+                  "rewrite",
+                  "no"
+                ],
+                "default": "no"
+              }
+            },
+            "required": [
+              "title",
+              "prompt"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.94.0",
+    "@types/mocha": "^10.0.8",
+    "@types/node": "20.x",
+    "@typescript-eslint/eslint-plugin": "^8.7.0",
+    "@typescript-eslint/parser": "^8.7.0",
+    "eslint": "^9.11.1",
+    "typescript": "^5.6.2",
+    "ts-loader": "^9.5.1",
+    "webpack": "^5.95.0",
+    "webpack-cli": "^5.1.4",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1"
+  }
+}
