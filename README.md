@@ -1,25 +1,44 @@
 # My Prompts
 
-Enhance your AI-assisted programming experience with custom prompts and configurations.
+My Prompts is a VS Code extension that enables developers to create and manage custom prompts for AI-assisted programming. Define custom prompts that integrate into your workflow for tasks like refactoring, generating code snippets, and automating repetitive tasks.
 
 ## Key Features
 
-- Manage and customize prompts for AI-assisted programming vis VS Code Settings
-- Configure prompt commands with various actions (quickfix, refactor, extract, etc.)
-- Load prompts from different scopes (workspace, global, etc.)
-- Select and configure language models for AI assistance
+- Easily manage and customize AI prompts through VS Code settings
+- Define actions for prompts such as quickfix, refactor, or extract
+- Load prompts from different configuration scopes (workspace, global, etc.)
+- Select and configure language models for AI integration
+- Use code actions for prompts directly within the editor
 
 ## Usage
 
-- Access prompts by running `My Prompts: Edit` from the command palette
-- Utilize prompts via code actions
-- Add custom prompts as code actions for quick and easy access
+- **Accessing Prompts:** Use the command palette (`Ctrl+Shift+P` or `Cmd+Shift+P`) and run the command `My Prompts: Edit` to view and customize prompts.
+- **Using Prompts in Code Actions:** Once configured, prompts can be accessed via code actions, triggered by right-clicking the editor and selecting `Code Actions` or using the `Ctrl+.` shortcut.
 
 ## Configuration
 
-### Commands
+The following sections explain how to configure the extension for custom prompt commands, models, and more.
 
-Add the following settings to your `settings.json` file:
+### Prompt Commands
+
+Define custom commands by adding the following setting in your `settings.json`:
+
+```json
+{
+    "myprompts.commands": [
+        {
+            "title": "Convert from JS to TS",
+            "prompt": ["Convert the selected code from JavaScript to TypeScript"]
+        }
+    ]
+}
+```
+
+You can define multiple commands, each with its own title and prompt instructions. Commands will merge across different configuration scopes, such as workspace and global settings, with more specific scopes taking precedence.
+
+### Code Actions
+
+You can enhance prompts by integrating them as VS Code code actions. This allows prompts to be invoked directly from the editor, scoped to specific languages:
 
 ```json
 {
@@ -27,15 +46,38 @@ Add the following settings to your `settings.json` file:
         {
             "title": "Convert from JS to TS",
             "prompt": ["Convert the selected code from JavaScript to TypeScript"],
-            "codeAction": "rewrite"
+            "codeAction": "rewrite",
+            "languages": [
+                "javascript",
+                "javascriptreact"
+            ]
         }
     ]
 }
 ```
 
-You can configure prompts at any level you prefer. Prompts will be merged with more specific scopes taking precedence.
+Here, `codeAction` specifies the type of action (e.g., `rewrite`, `refactor`), and languages restricts the action to specific language files. If omitted, the prompt will apply to all languages.
 
-### Model
+### Snippets
+
+Generated code can be valid VS Code snippets. You can use inline variables to edit them or ask the prompt to add them. For example:
+
+```json
+{
+    "myprompts.commands": [
+        {
+            "title": "Create React Component",
+            "prompt": ["Generate a React component with the name ${1:ComponentName}"]
+        }
+    ]
+}
+```
+
+This allows you to dynamically insert values into the generated code, making it more flexible and customizable.
+
+
+
+### Model Settings
 
 The default model is set to `copilot` with the family set to `gpt-4o`. To change the model and family, add the following settings to your `settings.json`:
 

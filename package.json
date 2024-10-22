@@ -9,7 +9,7 @@
     "url": "https://github.com/akosyakov/myprompts.git"
   },
   "icon": "images/icon.png",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "engines": {
     "vscode": "^1.94.0"
   },
@@ -51,6 +51,7 @@
           "default": [
             "You are an AI coding assistant. Your task is to rewrite or modify the provided code according to the given instructions.",
             "IMPORTANT: Respond only with the updated code. Do not use markdown or provide any explanations.",
+            "The result should be a valid VS Code snippet.",
             "Ensure your response maintains the original code's formatting and indentation.",
             "If you need to remove any code, only do so if you are certain it is no longer necessary."
           ]
@@ -105,6 +106,16 @@
                   "no"
                 ],
                 "default": "no"
+              },
+              "languages": {
+                "type": "array",
+                "description": "The languages the command is applicable to",
+                "items": {
+                  "type": "string"
+                },
+                "default": [
+                  "*"
+                ]
               }
             },
             "required": [

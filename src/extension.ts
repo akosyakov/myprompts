@@ -7,6 +7,7 @@ interface PromptCommand {
     title: string;
     prompt: string[];
     codeAction?: 'quickfix' | 'refactor' | 'extract' | 'inline' | 'move' | 'rewrite' | "no";
+    languages?: string[];
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -94,9 +95,9 @@ async function run(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, t
 
     const selection = textEditor.selection;
     const text = textEditor.document.getText(selection);
-
     const messages = [
         vscode.LanguageModelChatMessage.User(loadSystemPrompt(textEditor.document).join('\n')),
+        vscode.LanguageModelChatMessage.User(`The result should be valid ${textEditor.document.languageId} code.`),
         ...prompt.prompt.map(message => vscode.LanguageModelChatMessage.User(message)),
         vscode.LanguageModelChatMessage.User(text),
     ];
@@ -147,9 +148,7 @@ async function run(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, t
                 }
             }
 
-            await textEditor.edit(edit => {
-                edit.replace(selection, value);
-            });
+            await textEditor.insertSnippet(new vscode.SnippetString(value), selection);
         } catch (err) {
             const errorMessage = `Error: ${(<Error>err).message}`;
             vscode.window.showErrorMessage(errorMessage);
@@ -164,7 +163,10 @@ function loadPrompts(textDocument: vscode.TextDocument) {
     const merge = (value?: PromptCommand[]) => {
         if (value) {
             for (const command of value) {
-                commands.set(command.title, command);
+                const languages = command.languages || ['*'];
+                if (languages.includes('*') || languages.includes(textDocument.languageId)) {
+                    commands.set(command.title, command);
+                }
             }
         }
     };
